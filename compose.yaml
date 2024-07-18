@@ -1,4 +1,18 @@
 services:
+  api_service:
+    image: hristosl9/orders_api
+    restart: "no"
+    ports:
+      - 8080:8080
+    networks:
+      - prod_api_postgres
+    environment:
+      - spring.datasource.url=jdbc:postgresql://localhost:5432/orders?autoreconnect=true&createDatabaseIfNotExist=true&characterEncoding=utf8
+    depends_on:
+      - postgres
+    volumes:
+      - .m2:/root/.m2
+
   postgres:
     image: 'postgres:16.3'
     environment:
@@ -7,12 +21,23 @@ services:
       - 'POSTGRES_USER=ordersUser'
     ports:
       - '5432:5432'
+#    volumes:
+#      - postgres:/data/postgres
   pgadmin:
     container_name: pgadmin4_container
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:latest
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_LISTEN_PORT: 5050
     ports:
-      - "5050:80"
+      - "5050:5050"
+    depends_on:
+      - postgres
+    networks:
+      - prod_api_postgres
+
+
+networks:
+  prod_api_postgres:
