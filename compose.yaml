@@ -1,5 +1,5 @@
 services:
-  api_service:
+  application:
     image: hristosl9/orders_api
     restart: "no"
     ports:
@@ -7,14 +7,19 @@ services:
     networks:
       - prod_api_postgres
     environment:
-      - spring.datasource.url=jdbc:postgresql://localhost:5432/orders?autoreconnect=true&createDatabaseIfNotExist=true&characterEncoding=utf8
+      - spring.datasource.url=jdbc:postgresql://localhost:5432/OrdersDB?autoreconnect=true&createDatabaseIfNotExist=true&characterEncoding=utf8
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_DATASOURCE_USERNAME=ordersUser
+      - SPRING_DATASOURCE_PASSWORD=secret
     depends_on:
-      - postgres
+      - pgadmin
     volumes:
       - .m2:/root/.m2
 
   postgres:
     image: 'postgres:16.3'
+    networks:
+      - prod_api_postgres
     environment:
       - 'POSTGRES_DB=OrdersDB'
       - 'POSTGRES_PASSWORD=secret'
@@ -23,6 +28,7 @@ services:
       - '5432:5432'
 #    volumes:
 #      - postgres:/data/postgres
+
   pgadmin:
     container_name: pgadmin4_container
     image: dpage/pgadmin4:latest
