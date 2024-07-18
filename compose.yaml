@@ -7,7 +7,7 @@ services:
     networks:
       - prod_api_postgres
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/OrdersDB?autoreconnect=true&createDatabaseIfNotExist=true&characterEncoding=utf8
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/OrdersDB?autoreconnect=true&createDatabaseIfNotExist=true&characterEncoding=utf8
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - SPRING_DATASOURCE_USERNAME=ordersUser
       - SPRING_DATASOURCE_PASSWORD=secret
