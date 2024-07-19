@@ -20,27 +20,27 @@ public class OrderController {
         return orderService.getAllOrders();
     }
 
-    @GetMapping("/find/{id}")
-    public ResponseEntity<OrderEntity> getOrderById(@PathVariable Long id) {
-        Optional<OrderEntity> orderEntity = orderService.getOrderById(id);
-        return orderEntity.map(ResponseEntity::ok).orElseGet(()->ResponseEntity.notFound().build());
-    }
+//    @GetMapping("/find/{id}")
+//    public ResponseEntity<OrderEntity> getOrderById(@PathVariable Long id) {
+//        Optional<OrderEntity> orderEntity = orderService.getOrderById(id);
+//        return orderEntity.map(ResponseEntity::ok).orElseGet(()->ResponseEntity.notFound().build());
+//    }
 
     @PostMapping("/create")
     public ResponseEntity<OrderEntity> newOrder(@RequestBody OrderEntity orderEntity) {
-        OrderEntity order = orderService.saveOrder(orderEntity);
+        OrderEntity order = orderService.createOrder(orderEntity);
         return ResponseEntity.ok(order);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteOrder(@PathVariable Long id){
-        orderService.deleteOrder(id);
-        return ResponseEntity.ok("Order deleted successfully!");
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<OrderEntity> updateOrder(@PathVariable Long id, @RequestBody OrderEntity orderEntity){
-        OrderEntity order = orderService.updateOrder(id, orderEntity);
-        return ResponseEntity.ok(order);
-    }
+//    @DeleteMapping("/delete/{id}")
+//    public ResponseEntity<String> deleteOrder(@PathVariable Long id){
+//        orderService.deleteOrder(id);
+//        return ResponseEntity.ok("Order deleted successfully!");
+//    }
+//
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<OrderEntity> updateOrder(@PathVariable Long id, @RequestBody OrderEntity orderEntity){
+//        OrderEntity order = orderService.updateOrder(id, orderEntity);
+//        return ResponseEntity.ok(order);
+//    }
 }
