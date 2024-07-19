@@ -1,7 +1,17 @@
+networks:
+  prod_api_postgres:
+
+volumes:
+  postgres-data-orders:
+  pgadmin:
+
 services:
   application:
-    image: hristosl9/orders_api
+    image: orders_api:latest
+    build:
+      context: .
     restart: "no"
+    container_name: application
     ports:
       - 8080:8080
     networks:
@@ -12,12 +22,12 @@ services:
       - SPRING_DATASOURCE_USERNAME=ordersUser
       - SPRING_DATASOURCE_PASSWORD=secret
     depends_on:
-      - pgadmin
-    volumes:
-      - .m2:/root/.m2
+      - postgres
+
 
   postgres:
     image: 'postgres:16.3'
+    container_name: postgres
     networks:
       - prod_api_postgres
     environment:
@@ -26,24 +36,22 @@ services:
       - 'POSTGRES_USER=ordersUser'
     ports:
       - '5432:5432'
-#    volumes:
-#      - postgres:/data/postgres
+    volumes:
+      - postgres-data-orders:/var/lib/postgresql/data
 
-  pgadmin:
-    container_name: pgadmin4_container
-    image: dpage/pgadmin4:latest
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
-      PGADMIN_LISTEN_PORT: 5050
-    ports:
-      - "5050:5050"
-    depends_on:
-      - postgres
-    networks:
-      - prod_api_postgres
+#  pgadmin:
+#    container_name: pgadmin4_container
+#    image: dpage/pgadmin4:latest
+#    restart: always
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+#      PGADMIN_DEFAULT_PASSWORD: root
+#      PGADMIN_LISTEN_PORT: 5050
+#    ports:
+#      - "5050:5050"
+#    depends_on:
+#      - postgres
+#    networks:
+#      - prod_api_postgres
 
 
-networks:
-  prod_api_postgres:
