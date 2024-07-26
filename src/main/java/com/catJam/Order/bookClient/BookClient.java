@@ -15,7 +15,7 @@ public interface BookClient {
     List<BookEntity> findAll();
 
     @GetExchange("/books/{id}")
-    BookEntity findById(Integer id);
+    BookEntity findById(Long id);
 
     @PostExchange("/books")
     BookEntity create(BookEntity bookEntity);
