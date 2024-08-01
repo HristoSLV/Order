@@ -22,22 +22,22 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-//    public Optional<OrderEntity> getOrderById(Long id) {
-//        return orderRepository.findById(id);
-//    }
-//
-//    public void deleteOrder(Long id) {
-//        orderRepository.deleteById(id);
-//    }
-//
-//    public OrderEntity updateOrder(Long id, OrderEntity updatedOrder) {
-//        Optional<OrderEntity> existingOrder = orderRepository.findById(id);
-//        if (existingOrder.isPresent()) {
-//            OrderEntity order = existingOrder.get();
-//            order.setName(updatedOrder.getName());
-//            return orderRepository.save(order);
-//        } else {
-//            throw new RuntimeException("Order not found");
-//        }
-//    }
+    public Optional<OrderEntity> getOrderById(Long id) {
+        return orderRepository.findById(id);
+    }
+
+    public void deleteOrder(Long id) {
+        orderRepository.deleteById(id);
+    }
+
+    public OrderEntity updateOrder(Long id, OrderEntity updatedOrder) {
+        Optional<OrderEntity> existingOrder = orderRepository.findById(id);
+        if (existingOrder.isPresent()) {
+            OrderEntity order = existingOrder.get();
+            order.setName(updatedOrder.getName());
+            return orderRepository.save(order);
+        } else {
+            throw new RuntimeException("Order not found");
+        }
+    }
 }

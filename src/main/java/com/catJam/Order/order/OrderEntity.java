@@ -12,12 +12,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Data
 public class OrderEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "id", nullable = false)
-//    private Long id;
-    @EmbeddedId
-    private OrderEmbeddedId orderEmbeddedId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
+//    @EmbeddedId
+//    private OrderEmbeddedId orderEmbeddedId;
     private String name;
     @CreationTimestamp
     private LocalDate localDate;

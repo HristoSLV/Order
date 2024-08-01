@@ -22,12 +22,13 @@ services:
       - SPRING_DATASOURCE_USERNAME=ordersUser
       - SPRING_DATASOURCE_PASSWORD=secret
     depends_on:
-      - postgres
+      - postgresOrder
 
 
-  postgres:
+
+  postgresOrder:
     image: 'postgres:16.3'
-    container_name: postgres
+    container_name: postgresOrder
     networks:
       - prod_api_postgres
     environment:
