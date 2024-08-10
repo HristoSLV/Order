@@ -1,16 +1,21 @@
 package com.catJam.Order.order;
 
+import com.catJam.Order.bookClient.BookClient;
+import com.catJam.Order.bookClient.BookEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final BookClient bookClient;
 
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, BookClient bookClient) {
         this.orderRepository = orderRepository;
+        this.bookClient = bookClient;
     }
 
     public OrderEntity createOrder(OrderEntity orderEntity) {
@@ -18,11 +23,13 @@ public class OrderService {
     }
 
     public List<OrderEntity> getAllOrders() {
-        return orderRepository.findAll();
+        List<OrderEntity> orders = orderRepository.findAll();
+        orders.forEach(this::populateBooks);
+        return orders;
     }
 
     public Optional<OrderEntity> getOrderById(Long id) {
-        return orderRepository.findById(id);
+        return orderRepository.findById(id).map(this::populateBooks);
     }
 
     public void deleteOrder(Long id) {
@@ -40,5 +47,15 @@ public class OrderService {
         }
     }
 
+    private BookEntity getBookById(Long id) {
+        return bookClient.findById(id);
+    }
 
+    private OrderEntity populateBooks(OrderEntity order) {
+        List<BookEntity> books = order.getBookIds().stream()
+                .map(this::getBookById)
+                .collect(Collectors.toList());
+        order.setBooks(books);
+        return order;
+    }
 }

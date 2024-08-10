@@ -12,9 +12,7 @@ import java.util.List;
 @Table(name = "orders")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@RequiredArgsConstructor
+@Data
 public class OrderEntity {
 //    @EmbeddedId
 //    private OrderEmbeddedId orderEmbeddedId;
@@ -26,19 +24,9 @@ public class OrderEntity {
     private double totalAmount;
     @CreationTimestamp
     private LocalDate orderDate;
-    @ManyToMany
-    @JoinTable(
-            name = "order_book",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id"))
-    List<BookEntity> orderedBooks;
+    @ElementCollection
+    private List<Long> bookIds;
+    @Transient
+    private List<BookEntity> books;
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "id = " + id + ", " +
-                "userId = " + userId + ", " +
-                "totalAmount = " + totalAmount + ", " +
-                "orderDate = " + orderDate + ")";
-    }
 }
