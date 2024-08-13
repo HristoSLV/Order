@@ -1,6 +1,6 @@
 package com.catJam.Order.order;
 
-import com.catJam.Order.bookClient.BookEntity;
+import com.catJam.Order.bookClient.BookModel;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,6 +27,6 @@ public class OrderEntity {
     @ElementCollection
     private List<Long> bookIds;
     @Transient
-    private List<BookEntity> books;
+    private List<BookModel> books;
 
 }

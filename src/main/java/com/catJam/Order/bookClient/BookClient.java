@@ -12,21 +12,21 @@ import java.util.List;
 public interface BookClient {
 
     @GetExchange("/books")
-    List<BookEntity> findAll();
+    List<BookModel> findAll();
 
     @GetExchange("/books/{id}")
-    BookEntity findById(Long id);
+    BookModel findById(Long id);
 
     @PostExchange("/books")
-    BookEntity create(BookEntity bookEntity);
+    BookModel create(BookModel bookModel);
 
     @PutExchange("/books/{id}")
-    BookEntity update(@PathVariable Long id, BookEntity bookEntity);
+    BookModel update(@PathVariable Long id, BookModel bookModel);
 
     @DeleteMapping("/books/{id}")
     void delete(@PathVariable Long id);
 
     @GetExchange("/books/search")
-    List<BookEntity> findBooksByAuthorAndTitle(@RequestParam String author, @RequestParam String title);
+    List<BookModel> findBooksByAuthorAndTitle(@RequestParam String author, @RequestParam String title);
 
 }

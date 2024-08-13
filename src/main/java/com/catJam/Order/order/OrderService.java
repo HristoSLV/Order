@@ -1,7 +1,7 @@
 package com.catJam.Order.order;
 
 import com.catJam.Order.bookClient.BookClient;
-import com.catJam.Order.bookClient.BookEntity;
+import com.catJam.Order.bookClient.BookModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,12 +47,12 @@ public class OrderService {
         }
     }
 
-    private BookEntity getBookById(Long id) {
+    private BookModel getBookById(Long id) {
         return bookClient.findById(id);
     }
 
     private OrderEntity populateBooks(OrderEntity order) {
-        List<BookEntity> books = order.getBookIds().stream()
+        List<BookModel> books = order.getBookIds().stream()
                 .map(this::getBookById)
                 .collect(Collectors.toList());
         order.setBooks(books);
