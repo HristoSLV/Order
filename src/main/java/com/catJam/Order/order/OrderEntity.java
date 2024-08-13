@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -14,8 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class OrderEntity {
-//    @EmbeddedId
-//    private OrderEmbeddedId orderEmbeddedId;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -29,4 +28,18 @@ public class OrderEntity {
     @Transient
     private List<BookModel> books;
 
+    public OrderEntity(Long id, Long userId, double totalAmount, LocalDate orderDate, List<Long> bookIds) {
+        this.id = id;
+        this.userId = userId;
+        this.totalAmount = totalAmount;
+        this.orderDate = orderDate;
+        this.bookIds = bookIds;
+    }
+
+    public OrderEntity(Long id, Long userId, double totalAmount, List<Long> bookIds) {
+        this.id = id;
+        this.userId = userId;
+        this.totalAmount = totalAmount;
+        this.bookIds = bookIds;
+    }
 }

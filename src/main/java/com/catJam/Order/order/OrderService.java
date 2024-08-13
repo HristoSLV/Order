@@ -2,6 +2,7 @@ package com.catJam.Order.order;
 
 import com.catJam.Order.bookClient.BookClient;
 import com.catJam.Order.bookClient.BookModel;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,13 +24,17 @@ public class OrderService {
     }
 
     public List<OrderEntity> getAllOrders() {
-        List<OrderEntity> orders = orderRepository.findAll();
-        orders.forEach(this::populateBooks);
-        return orders;
+        return orderRepository.findAll();
     }
 
+//    public List<OrderEntity> getAllOrders2() {
+//        List<OrderEntity> orders = orderRepository.findAll();
+//        orders.forEach(this::populateBooks);
+//        return orders;
+//    }
+
     public Optional<OrderEntity> getOrderById(Long id) {
-        return orderRepository.findById(id).map(this::populateBooks);
+        return orderRepository.findById(id); //.map(this::populateBooks);
     }
 
     public void deleteOrder(Long id) {
@@ -40,22 +45,27 @@ public class OrderService {
         Optional<OrderEntity> existingOrder = orderRepository.findById(id);
         if (existingOrder.isPresent()) {
             OrderEntity order = existingOrder.get();
-            order.setId(updatedOrder.getId());
+            //order.setId(updatedOrder.getId());
+            order.setUserId(updatedOrder.getUserId());
+            order.setTotalAmount(updatedOrder.getTotalAmount());
+            order.setOrderDate(updatedOrder.getOrderDate());
+            order.setBookIds(updatedOrder.getBookIds());
+            //order.setBooks(updatedOrder.getBooks());
             return orderRepository.save(order);
         } else {
             throw new RuntimeException("Order not found");
         }
     }
 
-    private BookModel getBookById(Long id) {
-        return bookClient.findById(id);
-    }
-
-    private OrderEntity populateBooks(OrderEntity order) {
-        List<BookModel> books = order.getBookIds().stream()
-                .map(this::getBookById)
-                .collect(Collectors.toList());
-        order.setBooks(books);
-        return order;
-    }
+//    private BookModel getBookById(Long id) {
+//        return bookClient.findById(id);
+//    }
+//
+//    private OrderEntity populateBooks(OrderEntity order) {
+//        List<BookModel> books = order.getBookIds().stream()
+//                .map(this::getBookById)
+//                .collect(Collectors.toList());
+//        order.setBooks(books);
+//        return order;
+//    }
 }
