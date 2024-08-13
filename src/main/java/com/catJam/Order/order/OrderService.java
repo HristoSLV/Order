@@ -27,7 +27,7 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-//    public List<OrderEntity> getAllOrders2() {
+//    public List<OrderEntity> getAllOrders() {
 //        List<OrderEntity> orders = orderRepository.findAll();
 //        orders.forEach(this::populateBooks);
 //        return orders;

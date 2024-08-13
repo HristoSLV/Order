@@ -23,8 +23,8 @@ public interface BookClient {
     @PutExchange("/books/{id}")
     BookModel update(@PathVariable Long id, BookModel bookModel);
 
-    @DeleteMapping("/books/{id}")
-    void delete(@PathVariable Long id);
+//    @DeleteMapping("/books/{id}")
+//    void delete(@PathVariable Long id);
 
     @GetExchange("/books/search")
     List<BookModel> findBooksByAuthorAndTitle(@RequestParam String author, @RequestParam String title);
