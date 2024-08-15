@@ -1,23 +1,25 @@
 package com.catJam.Order.order;
 
+
 import com.catJam.Order.bookClient.BookClient;
 import com.catJam.Order.bookClient.BookModel;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
     private final BookClient bookClient;
 
-    public OrderService(OrderRepository orderRepository, BookClient bookClient) {
-        this.orderRepository = orderRepository;
-        this.bookClient = bookClient;
-    }
+
 
     public OrderEntity createOrder(OrderEntity orderEntity) {
         return orderRepository.save(orderEntity);
@@ -62,9 +64,10 @@ public class OrderService {
     }
 
     private OrderEntity populateBooks(OrderEntity order) {
-        List<BookModel> books = order.getBookIds().stream()
-                .map(this::getBookById)
-                .collect(Collectors.toList());
+        List<BookModel> books = new ArrayList<>();
+        for (Long bookId:order.getBookIds()) {
+            books.add(getBookById(bookId));
+        }
         order.setBooks(books);
         return order;
     }
