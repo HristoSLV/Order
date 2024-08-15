@@ -23,18 +23,18 @@ public class OrderService {
         return orderRepository.save(orderEntity);
     }
 
-    public List<OrderEntity> getAllOrders() {
+    public List<OrderEntity> getAllOrders2() {
         return orderRepository.findAll();
     }
 
-//    public List<OrderEntity> getAllOrders() {
-//        List<OrderEntity> orders = orderRepository.findAll();
-//        orders.forEach(this::populateBooks);
-//        return orders;
-//    }
+    public List<OrderEntity> getAllOrders() {
+        List<OrderEntity> orders = orderRepository.findAll();
+        orders.forEach(this::populateBooks);
+        return orders;
+    }
 
     public Optional<OrderEntity> getOrderById(Long id) {
-        return orderRepository.findById(id); //.map(this::populateBooks);
+        return orderRepository.findById(id).map(this::populateBooks);
     }
 
     public void deleteOrder(Long id) {
@@ -57,15 +57,15 @@ public class OrderService {
         }
     }
 
-//    private BookModel getBookById(Long id) {
-//        return bookClient.findById(id);
-//    }
-//
-//    private OrderEntity populateBooks(OrderEntity order) {
-//        List<BookModel> books = order.getBookIds().stream()
-//                .map(this::getBookById)
-//                .collect(Collectors.toList());
-//        order.setBooks(books);
-//        return order;
-//    }
+    private BookModel getBookById(Long id) {
+        return bookClient.findById(id);
+    }
+
+    private OrderEntity populateBooks(OrderEntity order) {
+        List<BookModel> books = order.getBookIds().stream()
+                .map(this::getBookById)
+                .collect(Collectors.toList());
+        order.setBooks(books);
+        return order;
+    }
 }

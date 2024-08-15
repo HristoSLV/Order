@@ -6,23 +6,23 @@ volumes:
   pgadmin:
 
 services:
-  application:
-    image: orders_api:latest
-    build:
-      context: .
-    restart: "no"
-    container_name: application
-    ports:
-      - 8080:8080
-    networks:
-      - prod_api_postgres
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/OrdersDB?autoreconnect=true&createDatabaseIfNotExist=true&characterEncoding=utf8
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SPRING_DATASOURCE_USERNAME=ordersUser
-      - SPRING_DATASOURCE_PASSWORD=secret
-    depends_on:
-      - postgres
+#  application:
+#    image: orders_api:latest
+#    build:
+#      context: .
+#    restart: "no"
+#    container_name: application
+#    ports:
+#      - 8080:8080
+#    networks:
+#      - prod_api_postgres
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/OrdersDB?autoreconnect=true&createDatabaseIfNotExist=true&characterEncoding=utf8
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#      - SPRING_DATASOURCE_USERNAME=ordersUser
+#      - SPRING_DATASOURCE_PASSWORD=secret
+#    depends_on:
+#      - postgres
 
 
 
