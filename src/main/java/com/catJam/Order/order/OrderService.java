@@ -20,6 +20,7 @@ public class OrderService {
     private final BookClient bookClient;
 
     public OrderEntity createOrder2(OrderEntity orderEntity) {
+        reduceBookStockWithList(orderEntity);
         return orderRepository.save(orderEntity);
     }
 
@@ -69,7 +70,7 @@ public class OrderService {
 
     private OrderEntity populateBooks(OrderEntity orderEntity) {
         List<BookModel> books = new ArrayList<>();
-        for (Long bookId:orderEntity.getBookIds()) {
+        for (Long bookId : orderEntity.getBookIds()) {
             books.add(getBookById(bookId));
         }
         orderEntity.setBooks(books);
@@ -80,13 +81,13 @@ public class OrderService {
         return bookClient.updateById(id);
     }
 
-    private OrderEntity reduceBookStock(OrderEntity orderEntity) {
-        //List<BookModel> books = new ArrayList<>();
-        for (Long bookId:orderEntity.getBookIds()) {
-            //books.add(updateBookById(bookId));
+    private void reduceBookStock(OrderEntity orderEntity) {
+        for (Long bookId : orderEntity.getBookIds()) {
             updateBookById(bookId);
         }
-        //orderEntity.setBooks(books);
-        return orderEntity;
+    }
+
+    private void reduceBookStockWithList(OrderEntity orderEntity) {
+        bookClient.updateListOfBooks(orderEntity.getBookIds());
     }
 }

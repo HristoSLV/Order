@@ -14,6 +14,9 @@ public interface BookClient {
 //    @GetExchange("/books")
 //    List<BookModel> findAll();
 
+    @PutExchange("/books")
+    List<BookModel> updateListOfBooks(@PathVariable List<Long> ids);
+
     @GetExchange("/books/{id}")
     BookModel findById(@PathVariable Long id);
 
