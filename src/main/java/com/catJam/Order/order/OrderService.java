@@ -4,6 +4,7 @@ package com.catJam.Order.order;
 import com.catJam.Order.bookClient.BookClient;
 import com.catJam.Order.bookClient.BookModel;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Or;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,13 +21,13 @@ public class OrderService {
     private final BookClient bookClient;
 
     public OrderEntity createOrder2(OrderEntity orderEntity) {
-        reduceBookStockWithList(orderEntity);
-        return orderRepository.save(orderEntity);
+        OrderEntity newOrderEntity = reduceBookStockWithList(orderEntity);
+        return orderRepository.save(newOrderEntity);
     }
 
     public OrderEntity createOrder(OrderEntity orderEntity) {
-        reduceBookStock(orderEntity);
-        return orderRepository.save(orderEntity);
+        OrderEntity newOrderEntity = reduceBookStock(orderEntity);
+        return orderRepository.save(newOrderEntity);
     }
 
 //    public List<OrderEntity> getAllOrders2() {
@@ -81,13 +82,18 @@ public class OrderService {
         return bookClient.updateById(id);
     }
 
-    private void reduceBookStock(OrderEntity orderEntity) {
+    private OrderEntity reduceBookStock(OrderEntity orderEntity) {
+        List<BookModel> books = new ArrayList<>();
         for (Long bookId : orderEntity.getBookIds()) {
-            updateBookById(bookId);
+            books.add(updateBookById(bookId));
         }
+        orderEntity.setBooks(books);
+        return orderEntity;
     }
 
-    private void reduceBookStockWithList(OrderEntity orderEntity) {
-        bookClient.updateListOfBooks(orderEntity.getBookIds());
+    private OrderEntity reduceBookStockWithList(OrderEntity orderEntity) {
+        List<BookModel> books = bookClient.updateListOfBooks(orderEntity.getBookIds());
+        orderEntity.setBooks(books);
+        return orderEntity;
     }
 }
