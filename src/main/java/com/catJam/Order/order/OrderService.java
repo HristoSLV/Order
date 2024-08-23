@@ -19,15 +19,18 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final BookClient bookClient;
 
-
-
-    public OrderEntity createOrder(OrderEntity orderEntity) {
+    public OrderEntity createOrder2(OrderEntity orderEntity) {
         return orderRepository.save(orderEntity);
     }
 
-    public List<OrderEntity> getAllOrders2() {
-        return orderRepository.findAll();
+    public OrderEntity createOrder(OrderEntity orderEntity) {
+        reduceBookStock(orderEntity);
+        return orderRepository.save(orderEntity);
     }
+
+//    public List<OrderEntity> getAllOrders2() {
+//        return orderRepository.findAll();
+//    }
 
     public List<OrderEntity> getAllOrders() {
         List<OrderEntity> orders = orderRepository.findAll();
@@ -63,12 +66,27 @@ public class OrderService {
         return bookClient.findById(id);
     }
 
-    private OrderEntity populateBooks(OrderEntity order) {
+
+    private OrderEntity populateBooks(OrderEntity orderEntity) {
         List<BookModel> books = new ArrayList<>();
-        for (Long bookId:order.getBookIds()) {
+        for (Long bookId:orderEntity.getBookIds()) {
             books.add(getBookById(bookId));
         }
-        order.setBooks(books);
-        return order;
+        orderEntity.setBooks(books);
+        return orderEntity;
+    }
+
+    private BookModel updateBookById(Long id) {
+        return bookClient.updateById(id);
+    }
+
+    private OrderEntity reduceBookStock(OrderEntity orderEntity) {
+        List<BookModel> books = new ArrayList<>();
+        for (Long bookId:orderEntity.getBookIds()) {
+            //books.add(updateBookById(bookId));
+            updateBookById(bookId);
+        }
+        //orderEntity.setBooks(books);
+        return orderEntity;
     }
 }

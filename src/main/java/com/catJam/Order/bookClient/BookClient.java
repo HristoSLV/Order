@@ -21,7 +21,10 @@ public interface BookClient {
 //    BookModel create(BookModel bookModel);
 
     @PutExchange("/books/{id}")
-    BookModel update(@PathVariable Long id, BookModel bookModel);
+    BookModel updateById(@PathVariable Long id);
+
+//    @PutExchange("/books/{id}")
+//    BookModel update(@PathVariable Long id, BookModel bookModel);
 
 //    @DeleteMapping("/books/{id}")
 //    void delete(@PathVariable Long id);
