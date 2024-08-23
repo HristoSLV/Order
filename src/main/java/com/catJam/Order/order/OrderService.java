@@ -81,7 +81,7 @@ public class OrderService {
     }
 
     private OrderEntity reduceBookStock(OrderEntity orderEntity) {
-        List<BookModel> books = new ArrayList<>();
+        //List<BookModel> books = new ArrayList<>();
         for (Long bookId:orderEntity.getBookIds()) {
             //books.add(updateBookById(bookId));
             updateBookById(bookId);
