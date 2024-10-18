@@ -36,10 +36,6 @@ public class OrderService {
         return orderRepository.save(orderEntity);
     }
 
-    public List<OrderEntity> getAllOrders2() {
-        return orderRepository.findAll();
-    }
-
     public List<OrderEntity> getAllOrders() {
         List<OrderEntity> orders = orderRepository.findAll();
         orders.forEach(this::populateBooks);
