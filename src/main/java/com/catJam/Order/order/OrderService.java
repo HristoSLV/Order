@@ -2,6 +2,7 @@ package com.catJam.Order.order;
 
 import com.catJam.Order.bookClient.BookClient;
 import com.catJam.Order.bookClient.BookModel;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,6 +35,10 @@ public class OrderService {
 
         // Запазваме поръчката
         return orderRepository.save(orderEntity);
+    }
+
+    public List<OrderEntity> getAllOrders2() {
+        return orderRepository.findAll();
     }
 
     public List<OrderEntity> getAllOrders() {
