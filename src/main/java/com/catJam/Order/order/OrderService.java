@@ -2,7 +2,6 @@ package com.catJam.Order.order;
 
 import com.catJam.Order.bookClient.BookClient;
 import com.catJam.Order.bookClient.BookModel;
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +24,7 @@ public class OrderService {
             BookModel book = bookClient.findById(bookId);
 
             // Проверка дали има достатъчно наличност
-            if (book.stock() < quantity) {
+            if (book.getStock() < quantity) {
                 throw new IllegalArgumentException("Not enough stock for book ID: " + bookId);
             }
 
