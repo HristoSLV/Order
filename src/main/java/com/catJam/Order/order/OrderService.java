@@ -2,7 +2,6 @@ package com.catJam.Order.order;
 
 import com.catJam.Order.bookClient.BookClient;
 import com.catJam.Order.bookClient.BookModel;
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,11 +19,21 @@ public class OrderService {
     }
 
     public OrderEntity createOrder(OrderEntity orderEntity) {
-        return orderRepository.save(orderEntity);
-    }
+        orderEntity.getBookQuantities().forEach((bookId, quantity) -> {
+            // Взимаме книгата по ID
+            BookModel book = bookClient.findById(bookId);
 
-    public List<OrderEntity> getAllOrders2() {
-        return orderRepository.findAll();
+            // Проверка дали има достатъчно наличност
+            if (book.stock() < quantity) {
+                throw new IllegalArgumentException("Not enough stock for book ID: " + bookId);
+            }
+
+            // Намаляване на наличностите
+            bookClient.updateStock(bookId, quantity);
+        });
+
+        // Запазваме поръчката
+        return orderRepository.save(orderEntity);
     }
 
     public List<OrderEntity> getAllOrders() {
@@ -45,12 +54,10 @@ public class OrderService {
         Optional<OrderEntity> existingOrder = orderRepository.findById(id);
         if (existingOrder.isPresent()) {
             OrderEntity order = existingOrder.get();
-            //order.setId(updatedOrder.getId());
             order.setUserId(updatedOrder.getUserId());
             order.setTotalAmount(updatedOrder.getTotalAmount());
             order.setOrderDate(updatedOrder.getOrderDate());
-            order.setBookIds(updatedOrder.getBookIds());
-            //order.setBooks(updatedOrder.getBooks());
+            order.setBookQuantities(updatedOrder.getBookQuantities());
             return orderRepository.save(order);
         } else {
             throw new RuntimeException("Order not found");
@@ -62,10 +69,15 @@ public class OrderService {
     }
 
     private OrderEntity populateBooks(OrderEntity order) {
-        List<BookModel> books = order.getBookIds().stream()
+        List<BookModel> books = order.getBookQuantities().keySet().stream()
                 .map(this::getBookById)
                 .collect(Collectors.toList());
         order.setBooks(books);
         return order;
+    }
+
+    // Примерен нов метод за търсене на книги по автор и заглавие
+    public List<BookModel> searchBooks(String author, String title) {
+        return bookClient.findBooksByAuthorAndTitle(author, title);
     }
 }

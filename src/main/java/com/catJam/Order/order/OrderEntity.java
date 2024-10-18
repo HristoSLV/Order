@@ -6,11 +6,13 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "orders")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -23,23 +25,29 @@ public class OrderEntity {
     private double totalAmount;
     @CreationTimestamp
     private LocalDate orderDate;
+
     @ElementCollection
-    private List<Long> bookIds;
+    @CollectionTable(name = "order_books", joinColumns = @JoinColumn(name = "order_id"))
+    @MapKeyColumn(name = "book_id")
+    @Column(name = "quantity")
+    private Map<Long, Integer> bookQuantities;
+
     @Transient
     private List<BookModel> books;
 
-    public OrderEntity(Long id, Long userId, double totalAmount, LocalDate orderDate, List<Long> bookIds) {
+    public OrderEntity(Long id, Long userId, double totalAmount, LocalDate orderDate, Map<Long, Integer> bookQuantities) {
         this.id = id;
         this.userId = userId;
         this.totalAmount = totalAmount;
         this.orderDate = orderDate;
-        this.bookIds = bookIds;
+        this.bookQuantities = bookQuantities;
     }
 
-    public OrderEntity(Long id, Long userId, double totalAmount, List<Long> bookIds) {
+    public OrderEntity(Long id, Long userId, double totalAmount, Map<Long, Integer> bookQuantities) {
         this.id = id;
         this.userId = userId;
         this.totalAmount = totalAmount;
-        this.bookIds = bookIds;
+        this.bookQuantities = bookQuantities;
     }
 }
+

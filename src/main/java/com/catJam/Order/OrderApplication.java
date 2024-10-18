@@ -8,9 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @OpenAPIDefinition(info = @Info(title = "Orders DB", description = "Microservice for Orders data"))
 public class OrderApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(OrderApplication.class, args);
 	}
-
 }
