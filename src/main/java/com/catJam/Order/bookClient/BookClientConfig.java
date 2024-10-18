@@ -8,9 +8,12 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
 public class BookClientConfig {
+
+    private static final String BOOK_SERVICE_CONNECTION = "http://localhost:8081";
+
     @Bean
     BookClient bookClient() {
-        RestClient client = RestClient.create("https://http://localhost:8081/");
+        RestClient client = RestClient.create(BOOK_SERVICE_CONNECTION);
         HttpServiceProxyFactory factory = HttpServiceProxyFactory
                 .builderFor(RestClientAdapter.create(client))
                 .build();
