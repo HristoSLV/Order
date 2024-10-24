@@ -1,11 +1,11 @@
 spring:
   application:
-    name: order_service
+    name: orderservice
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/orderservice?autoreconnect=true&createDatabaseIfNotExist=true&characterEncoding=utf8
+    url: jdbc:postgresql://localhost:5432/OrdersDB?autoreconnect=true&createDatabaseIfNotExist=true&characterEncoding=utf8
     username: ordersUser
-    password: secret
+    password: secret    # Добави парола
     driver-class-name: org.postgresql.Driver
 
   jpa:
