@@ -17,8 +17,9 @@ public class OrderController {
     }
 
     @GetMapping("/find-all")
-    public List<OrderEntity> getAllOrders() {
-        return orderService.getAllOrders();
+    public ResponseEntity <List<OrderEntity>> getAllOrders() {
+        List<OrderEntity> orders=orderService.getAllOrders();
+        return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/find/{id}")
