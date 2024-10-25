@@ -24,22 +24,32 @@ public class OrderService {
             BookModel book = bookClient.findById(bookId);
 
             // Проверка дали има достатъчно наличност
-            if (book.getStock() < quantity) {
-                throw new IllegalArgumentException("Not enough stock for book ID: " + bookId);
+            if (book == null) {
+                throw new IllegalArgumentException("Book with ID: " + bookId + " not found.");
             }
-
+            if (book.getStock() < quantity){
+                throw new IllegalArgumentException("Not enough stock for book ID: "+bookId);
+            }
             // Намаляване на наличностите
             bookClient.updateStock(bookId, quantity);
         });
+
+        double totalAmount=orderEntity.getBookQuantities().entrySet().stream()
+                .mapToDouble(entry ->{
+                    BookModel book = bookClient.findById(entry.getKey());
+                    return book.getPrice()* entry.getValue();
+                })
+                .sum();
+        orderEntity.setTotalAmount(totalAmount);
 
         // Запазваме поръчката
         return orderRepository.save(orderEntity);
     }
 
     public List<OrderEntity> getAllOrders() {
-        List<OrderEntity> orders = orderRepository.findAll();
-        orders.forEach(this::populateBooks);
-        return orders;
+        return orderRepository.findAll().stream()
+                .map(this::populateBooks)
+                .collect(Collectors.toList());
     }
 
     public Optional<OrderEntity> getOrderById(Long id) {
@@ -51,27 +61,25 @@ public class OrderService {
     }
 
     public OrderEntity updateOrder(Long id, OrderEntity updatedOrder) {
-        Optional<OrderEntity> existingOrder = orderRepository.findById(id);
-        if (existingOrder.isPresent()) {
-            OrderEntity order = existingOrder.get();
-            order.setUserId(updatedOrder.getUserId());
-            order.setTotalAmount(updatedOrder.getTotalAmount());
-            order.setOrderDate(updatedOrder.getOrderDate());
-            order.setBookQuantities(updatedOrder.getBookQuantities());
-            return orderRepository.save(order);
-        } else {
-            throw new RuntimeException("Order not found");
-        }
+        return orderRepository.findById(id).map(existingOrder ->{
+            existingOrder.setUserId(updatedOrder.getUserId());
+            existingOrder.setBookQuantities(updatedOrder.getBookQuantities());
+            existingOrder.setOrderDate(updatedOrder.getOrderDate());
+            return orderRepository.save(existingOrder);
+        }).orElseThrow(() -> new RuntimeException("Order not found"));
     }
-
-    private BookModel getBookById(Long id) {
-        return bookClient.findById(id);
-    }
-
     private OrderEntity populateBooks(OrderEntity order) {
         List<BookModel> books = order.getBookQuantities().keySet().stream()
-                .map(this::getBookById)
-                .collect(Collectors.toList());
+                .map(bookId -> {
+                    try {
+                        return bookClient.findById(bookId);
+                    }catch (Exception e){
+                        System.err.println("Failed to retrieve book with ID: "+bookId+ ": "+e.getMessage());
+                        return null;
+                    }
+                })
+                .filter(book -> book!=null)
+                        .collect(Collectors.toList());
         order.setBooks(books);
         return order;
     }

@@ -1,5 +1,6 @@
 package com.catJam.Order.order;
 
+
 import com.catJam.Order.bookClient.BookModel;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,8 +22,11 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
+
     private Long userId;
+
     private double totalAmount;
+
     @CreationTimestamp
     private LocalDate orderDate;
 
@@ -33,21 +37,6 @@ public class OrderEntity {
     private Map<Long, Integer> bookQuantities;
 
     @Transient
-    private List<BookModel> books;
-
-    public OrderEntity(Long id, Long userId, double totalAmount, LocalDate orderDate, Map<Long, Integer> bookQuantities) {
-        this.id = id;
-        this.userId = userId;
-        this.totalAmount = totalAmount;
-        this.orderDate = orderDate;
-        this.bookQuantities = bookQuantities;
-    }
-
-    public OrderEntity(Long id, Long userId, double totalAmount, Map<Long, Integer> bookQuantities) {
-        this.id = id;
-        this.userId = userId;
-        this.totalAmount = totalAmount;
-        this.bookQuantities = bookQuantities;
-    }
+    private List<BookModel>books;
 }
 
