@@ -1,5 +1,6 @@
 package com.catJam.Order.bookClient;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
@@ -9,11 +10,12 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 @Configuration
 public class BookClientConfig {
 
-    private static final String BOOK_SERVICE_CONNECTION = "http://localhost:8081";
+    @Value("${book.service.url}")
+    private String bookServiceURL;
 
     @Bean
     BookClient bookClient() {
-        RestClient client = RestClient.create(BOOK_SERVICE_CONNECTION);
+        RestClient client = RestClient.create(bookServiceURL);
         HttpServiceProxyFactory factory = HttpServiceProxyFactory
                 .builderFor(RestClientAdapter.create(client))
                 .build();
