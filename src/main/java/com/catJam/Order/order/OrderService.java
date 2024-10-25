@@ -1,9 +1,9 @@
 package com.catJam.Order.order;
 
 import com.catJam.Order.bookClient.BookClient;
-import com.catJam.Order.bookClient.BookModel;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,75 +17,44 @@ public class OrderService {
         this.orderRepository = orderRepository;
         this.bookClient = bookClient;
     }
-
-    public OrderEntity createOrder(OrderEntity orderEntity) {
-        orderEntity.getBookQuantities().forEach((bookId, quantity) -> {
-            // Взимаме книгата по ID
-            BookModel book = bookClient.findById(bookId);
-
-            // Проверка дали има достатъчно наличност
-            if (book == null) {
-                throw new IllegalArgumentException("Book with ID: " + bookId + " not found.");
-            }
-            if (book.getStock() < quantity){
-                throw new IllegalArgumentException("Not enough stock for book ID: "+bookId);
-            }
-            // Намаляване на наличностите
-            bookClient.updateStock(bookId, quantity);
-        });
-
-        double totalAmount=orderEntity.getBookQuantities().entrySet().stream()
-                .mapToDouble(entry ->{
-                    BookModel book = bookClient.findById(entry.getKey());
-                    return book.getPrice()* entry.getValue();
-                })
-                .sum();
-        orderEntity.setTotalAmount(totalAmount);
-
-        // Запазваме поръчката
-        return orderRepository.save(orderEntity);
-    }
-
-    public List<OrderEntity> getAllOrders() {
+    public List<OrderDTO> getAllOrders() {
         return orderRepository.findAll().stream()
-                .map(this::populateBooks)
+                .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public Optional<OrderEntity> getOrderById(Long id) {
-        return orderRepository.findById(id).map(this::populateBooks);
+    public Optional<OrderDTO> getOrderById(Long id) {
+        return orderRepository.findById(id).map(this::toDTO);
+    }
+
+    public OrderDTO createOrder(OrderDTO orderDTO) {
+        Integer availableStock = bookClient.getStock(orderDTO.getBookId()).getBody();
+
+        if (availableStock == null || availableStock < orderDTO.getQuantity()) {
+            throw new IllegalArgumentException("Not enough stock available.");
+        }
+
+        bookClient.decreaseStock(orderDTO.getBookId(), orderDTO.getQuantity());
+
+        OrderEntity order = toEntity(orderDTO);
+        order.setOrderDate(LocalDate.now());
+        OrderEntity savedOrder = orderRepository.save(order);
+
+        return toDTO(savedOrder);
     }
 
     public void deleteOrder(Long id) {
+        if (!orderRepository.existsById(id)) {
+            throw new IllegalArgumentException("Order not found");
+        }
         orderRepository.deleteById(id);
     }
 
-    public OrderEntity updateOrder(Long id, OrderEntity updatedOrder) {
-        return orderRepository.findById(id).map(existingOrder ->{
-            existingOrder.setUserId(updatedOrder.getUserId());
-            existingOrder.setBookQuantities(updatedOrder.getBookQuantities());
-            existingOrder.setOrderDate(updatedOrder.getOrderDate());
-            return orderRepository.save(existingOrder);
-        }).orElseThrow(() -> new RuntimeException("Order not found"));
-    }
-    private OrderEntity populateBooks(OrderEntity order) {
-        List<BookModel> books = order.getBookQuantities().keySet().stream()
-                .map(bookId -> {
-                    try {
-                        return bookClient.findById(bookId);
-                    }catch (Exception e){
-                        System.err.println("Failed to retrieve book with ID: "+bookId+ ": "+e.getMessage());
-                        return null;
-                    }
-                })
-                .filter(book -> book!=null)
-                        .collect(Collectors.toList());
-        order.setBooks(books);
-        return order;
+    private OrderDTO toDTO(OrderEntity order) {
+        return new OrderDTO(order.getId(), order.getCustomerName(), order.getBookId(), order.getQuantity(), order.getOrderDate());
     }
 
-    // Примерен нов метод за търсене на книги по автор и заглавие
-    public List<BookModel> searchBooks(String author, String title) {
-        return bookClient.findBooksByAuthorAndTitle(author, title);
+    private OrderEntity toEntity(OrderDTO orderDTO) {
+        return new OrderEntity(orderDTO.getId(), orderDTO.getCustomerName(), orderDTO.getBookId(), orderDTO.getQuantity(), orderDTO.getOrderDate());
     }
 }

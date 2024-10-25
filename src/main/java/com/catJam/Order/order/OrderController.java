@@ -1,11 +1,10 @@
 package com.catJam.Order.order;
 
-import com.catJam.Order.bookClient.BookModel;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/order")
@@ -16,40 +15,31 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @GetMapping("/find-all")
-    public ResponseEntity <List<OrderEntity>> getAllOrders() {
-        List<OrderEntity> orders=orderService.getAllOrders();
-        return ResponseEntity.ok(orders);
+    @GetMapping
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
     }
 
-    @GetMapping("/find/{id}")
-    public ResponseEntity<OrderEntity> getOrderById(@PathVariable Long id) {
-        Optional<OrderEntity> orderEntity = orderService.getOrderById(id);
-        return orderEntity.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long id) {
+        return orderService.getOrderById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<OrderEntity> newOrder(@RequestBody OrderEntity orderEntity) {
-        OrderEntity order = orderService.createOrder(orderEntity);
-        return ResponseEntity.ok(order);
+    @PostMapping
+    public ResponseEntity<OrderDTO> createOrder(@Valid @RequestBody OrderDTO orderDTO) {
+        try {
+            OrderDTO createdOrder = orderService.createOrder(orderDTO);
+            return ResponseEntity.ok(createdOrder);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
-        return ResponseEntity.ok("Order deleted successfully!");
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<OrderEntity> updateOrder(@PathVariable Long id, @RequestBody OrderEntity orderEntity) {
-        OrderEntity order = orderService.updateOrder(id, orderEntity);
-        return ResponseEntity.ok(order);
-    }
-
-    // Нов метод за търсене на книги по автор и заглавие
-    @GetMapping("/books/search")
-    public ResponseEntity<List<BookModel>> searchBooks(@RequestParam String author, @RequestParam String title) {
-        List<BookModel> books = orderService.searchBooks(author, title);
-        return ResponseEntity.ok(books);
+        return ResponseEntity.noContent().build();
     }
 }
