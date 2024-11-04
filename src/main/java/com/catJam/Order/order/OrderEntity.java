@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
 @Entity
-@Table(name = "orders")
+@Table(name = "order_service")
 @Getter
 @Setter
 @NoArgsConstructor

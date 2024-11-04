@@ -19,4 +19,4 @@ server:
 
 book:
   service:
-    url: http://localhost:8081 # Добавяме URL за връзка с BookService
+    url: http://book-service:8081 # Добавяме URL за връзка с BookService
