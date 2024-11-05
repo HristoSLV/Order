@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="Ismail">
+        <insert tableName="orders">
+            <column name="id" value="1"/>
+            <column name="order_id" value="10"/>
+            <column name="book_names" value="{The Great Gatsby}"/>
+            <column name="local_date" value="2024-11-4"/>
+            <column name="name" value="John Doe"/>
+            <column name="order_date" value="2024-11-5"/>
+            <column name="user_id" value="1001"/>
+        </insert>
+
+        <insert tableName="orders">
+            <column name="id" value="2"/>
+            <column name="order_id" value="20"/>
+            <column name="book_names" value="{1984}"/>
+            <column name="local_date" value="2024-11-3"/>
+            <column name="name" value="Jane Smith"/>
+            <column name="order_date" value="2024-11-5"/>
+            <column name="user_id" value="1002"/>
+        </insert>
+
+        <insert tableName="orders">
+            <column name="id" value="3"/>
+            <column name="order_id" value="30"/>
+            <column name="book_names" value="{Moby Dick}"/>
+            <column name="local_date" value="2024-11-5"/>
+            <column name="name" value="Alice Johnson"/>
+            <column name="order_date" value="2024-11-5"/>
+            <column name="user_id" value="1003"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

@@ -2,6 +2,9 @@ spring:
   application:
     name: orderservice
 
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
   datasource:
     url: jdbc:postgresql://localhost:5432/OrdersDB?autoreconnect=true&createDatabaseIfNotExist=true&characterEncoding=utf8
     username: ordersUser
@@ -20,3 +23,4 @@ server:
 book:
   service:
     url: http://book-service:8081 # Добавяме URL за връзка с BookService
+
